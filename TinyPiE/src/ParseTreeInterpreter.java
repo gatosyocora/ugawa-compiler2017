@@ -7,18 +7,34 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import parser.TinyPiELexer;
 import parser.TinyPiEParser;
 import parser.TinyPiEParser.AddExprContext;
+import parser.TinyPiEParser.AndExprContext;
 import parser.TinyPiEParser.ExprContext;
 import parser.TinyPiEParser.LiteralExprContext;
 import parser.TinyPiEParser.MulExprContext;
+import parser.TinyPiEParser.OrExprContext;
 import parser.TinyPiEParser.ParenExprContext;
 import parser.TinyPiEParser.VarExprContext;
 
 public class ParseTreeInterpreter extends InterpreterBase {
 	int evalExpr(ParseTree ctxx, Environment env) {
-		if (ctxx instanceof ExprContext) {
+		if (ctxx instanceof ExprContext) { // expr
 			ExprContext ctx = (ExprContext) ctxx;
-			return evalExpr(ctx.addExpr(), env);
-		} else if (ctxx instanceof AddExprContext) {
+			return evalExpr(ctx.andExpr(), env);
+		} else if (ctxx instanceof AndExprContext) { // andExpr
+			AndExprContext ctx = (AndExprContext) ctxx;
+			if (ctx.andExpr() == null)
+				return evalExpr(ctx.orExpr(), env);
+			int lhsValue = evalExpr(ctx.andExpr(), env);
+			int rhsValue = evalExpr(ctx.orExpr(), env);
+			return lhsValue & rhsValue;
+		} else if (ctxx instanceof OrExprContext) { // orExpr
+			OrExprContext ctx = (OrExprContext) ctxx;
+			if (ctx.orExpr() == null)
+				return evalExpr(ctx.addExpr(), env);
+			int lhsValue = evalExpr(ctx.orExpr(), env);
+			int rhsValue = evalExpr(ctx.addExpr(), env);
+			return lhsValue | rhsValue;
+		} else if (ctxx instanceof AddExprContext) { // addExpr
 			AddExprContext ctx = (AddExprContext) ctxx;
 			if (ctx.addExpr() == null)
 				return evalExpr(ctx.mulExpr(), env);
@@ -28,7 +44,7 @@ public class ParseTreeInterpreter extends InterpreterBase {
 				return lhsValue + rhsValue;
 			else
 				return lhsValue - rhsValue;
-		} else if (ctxx instanceof MulExprContext) {
+		} else if (ctxx instanceof MulExprContext) { // mulExpr
 			MulExprContext ctx = (MulExprContext) ctxx;
 			if (ctx.mulExpr() == null)
 				return evalExpr(ctx.unaryExpr(), env);
@@ -38,7 +54,7 @@ public class ParseTreeInterpreter extends InterpreterBase {
 				return lhsValue * rhsValue;
 			else
 				return lhsValue / rhsValue;
-		} else if (ctxx instanceof LiteralExprContext) {
+		} else if (ctxx instanceof LiteralExprContext) { // unaryExpr
 			LiteralExprContext ctx = (LiteralExprContext) ctxx;
 			int value = Integer.parseInt(ctx.VALUE().getText());
 			return value;
