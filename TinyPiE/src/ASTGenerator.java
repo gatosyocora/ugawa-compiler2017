@@ -5,8 +5,10 @@ import parser.TinyPiEParser.AndExprContext;
 import parser.TinyPiEParser.ExprContext;
 import parser.TinyPiEParser.LiteralExprContext;
 import parser.TinyPiEParser.MulExprContext;
+import parser.TinyPiEParser.NotExprContext;
 import parser.TinyPiEParser.OrExprContext;
 import parser.TinyPiEParser.ParenExprContext;
+import parser.TinyPiEParser.SubExprContext;
 import parser.TinyPiEParser.VarExprContext;
 
 public class ASTGenerator {	
@@ -30,11 +32,17 @@ public class ASTGenerator {
 			return new ASTBinaryExprNode(ctx.OROP().getText(), lhs, rhs);
 		}else if (ctxx instanceof AddExprContext) { // addExpr
 			AddExprContext ctx = (AddExprContext) ctxx;
+			String calc;
 			if (ctx.addExpr() == null)
 				return translateExpr(ctx.mulExpr());
+			if (ctx.ADDOP() != null) {
+				calc = ctx.ADDOP().getText();
+			} else {
+				calc = ctx.SUBOP().getText();
+			}
 			ASTNode lhs = translateExpr(ctx.addExpr());
 			ASTNode rhs = translateExpr(ctx.mulExpr());
-			return new ASTBinaryExprNode(ctx.ADDOP().getText(), lhs, rhs);
+			return new ASTBinaryExprNode(calc, lhs, rhs);
 		} else if (ctxx instanceof MulExprContext) { // mulExpr
 			MulExprContext ctx = (MulExprContext) ctxx;
 			if (ctx.mulExpr() == null)
@@ -42,17 +50,25 @@ public class ASTGenerator {
 			ASTNode lhs = translateExpr(ctx.mulExpr());
 			ASTNode rhs = translateExpr(ctx.unaryExpr());
 			return new ASTBinaryExprNode(ctx.MULOP().getText(), lhs, rhs);
-		} else if (ctxx instanceof LiteralExprContext) { // unaryExpr
+		} else if (ctxx instanceof LiteralExprContext) { // literalExpr
 			LiteralExprContext ctx = (LiteralExprContext) ctxx;
 			int value = Integer.parseInt(ctx.VALUE().getText());
 			return new ASTNumberNode(value);
-		} else if (ctxx instanceof VarExprContext) {
+		} else if (ctxx instanceof VarExprContext) { // varExpr
 			VarExprContext ctx = (VarExprContext) ctxx;
 			String varName = ctx.IDENTIFIER().getText();
 			return new ASTVarRefNode(varName);
-		} else if (ctxx instanceof ParenExprContext) {
+		} else if (ctxx instanceof ParenExprContext) { // parenExpr
 			ParenExprContext ctx = (ParenExprContext) ctxx;
 			return translateExpr(ctx.expr());
+		} else if (ctxx instanceof SubExprContext) { // subExpr
+			SubExprContext ctx = (SubExprContext) ctxx;
+			ASTNode rhs = translateExpr(ctx.expr());
+			return new ASTUnaryNode(ctx.SUBOP().getText(), rhs);
+		} else if (ctxx instanceof NotExprContext) { // notExpr
+			NotExprContext ctx = (NotExprContext) ctxx;
+			ASTNode rhs = translateExpr(ctx.expr());
+			return new ASTUnaryNode(ctx.NOTOP().getText(), rhs);
 		}
 		throw new Error("Unknown parse tree node: "+ctxx.getText());		
 	}
