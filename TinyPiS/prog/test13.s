@@ -13,7 +13,7 @@ _start:
 	ldr r0, =#100
 	ldr r1, =_Pi_var_xxx
 	str r0, [r1, #0]
-	ldr r0, =#20
+	ldr r0, =#160
 	ldr r1, =_Pi_var_yyy
 	str r0, [r1, #0]
 	ldr r0, =_Pi_var_xxx
@@ -41,23 +41,24 @@ __pi_runtime_print:
 	str r0, [sp, #-4]!
 	str r1, [sp, #-4]!
 	str r2, [sp, #-4]!
+	str r3, [sp, #-4]!
 	ldr r1, =buf
-	add r1, r1, #8
+	add r3, r1, #8
 loop:
 	and r2, r0, #15
 	cmp r2, #10
 	add r2, r2, #48
-	addcs r2, r2, #39
-	sub r1, r1, #1
-	strb r2, [r1]
+	addcs r2, r2, #7
+	sub r3, r3, #1
+	strb r2, [r3]
 	lsr r0, r0, #4
-	cmp r0, #0
-	bne loop
+	cmp r3, r1
+	bcs loop
 	mov r7, #4
-	ldr r1, =buf
 	mov r0, #1
 	mov r2, #9
 	swi #0
+	ldr r3, [sp], #4
 	ldr r2, [sp], #4
 	ldr r1, [sp], #4
 	ldr r0, [sp], #4
