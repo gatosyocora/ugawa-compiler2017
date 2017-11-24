@@ -1,0 +1,15 @@
+var aaa;
+var bbb;
+var _CCC_;
+var ddd;
+{
+aaa = 10;
+bbb = 5;
+_CCC_ = 3;
+ddd = aaa + bbb;
+aaa = ~aaa;
+bbb = aaa & _CCC_;
+aaa = bbb | ddd;
+bbb = ddd * 2 + (_CCC_ + aaa);
+answer = bbb + ddd;
+}

@@ -23,6 +23,10 @@ public class Compiler extends CompilerBase {
 				emitRRR("mul", REG_DST, REG_R1, REG_DST);
 			else if (nd.op.equals("/"))
 				emitRRR("udiv", REG_DST, REG_R1, REG_DST);
+			else if (nd.op.equals("&")) 
+				emitRRR("and", REG_DST, REG_R1, REG_DST);
+			else if (nd.op.equals("|")) 
+				emitRRR("orr", REG_DST, REG_R1, REG_DST);
 			else
 				throw new Error("Unknwon operator: "+nd.op);
 			emitPOP(REG_R1);
@@ -40,6 +44,16 @@ public class Compiler extends CompilerBase {
 				emitLDR(REG_DST, REG_DST, 0);
 			} else
 				throw new Error("Not a global variable: "+nd.varName);
+		} else if (ndx instanceof ASTUnaryNode) {
+			ASTUnaryNode nd = (ASTUnaryNode) ndx;
+			compileExpr(nd.operand, env);
+			if (nd.op.equals("-")) {
+				emitRR("mvn", REG_DST, REG_DST);
+				emitRRI("add", REG_DST, REG_DST, 1);
+			} else if (nd.op.equals("~"))
+				emitRR("mvn", REG_DST, REG_DST);
+			else
+				throw new Error("Unknown operator: "+nd.op);
 		} else 
 			throw new Error("Unknown expression: "+ndx);
 	}

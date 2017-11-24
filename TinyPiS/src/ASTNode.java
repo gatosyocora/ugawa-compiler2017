@@ -111,3 +111,16 @@ class ASTVarRefNode extends ASTNode {
 		return "(VarRef "+varName+")";
 	}
 }
+
+class ASTUnaryNode extends ASTNode {
+	String op;
+	ASTNode operand;
+	ASTUnaryNode(String op, ASTNode operand) {
+		this.op = op;
+		this.operand = operand;
+	}
+	@Override
+	public String toString() {
+		return "(UnaRef "+op+" "+operand+")";
+	}
+}
