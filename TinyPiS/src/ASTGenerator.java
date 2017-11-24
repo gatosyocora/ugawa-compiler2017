@@ -52,6 +52,10 @@ public class ASTGenerator {
  			ASTNode expr = translate(ctx.expr());
  			ASTNode stmt = translate(ctx.stmt());
  			return new ASTWhileStmtNode(expr, stmt);
+		} else if (ctxx instanceof PrintStmtContext) { // PrintStmt
+ 			PrintStmtContext ctx = (PrintStmtContext) ctxx;
+ 			ASTNode expr = translate(ctx.expr());
+ 			return new ASTPrintStmtNode(expr);
 		} else if (ctxx instanceof ExprContext) { // expr
 			ExprContext ctx = (ExprContext) ctxx;
 			return translate(ctx.andExpr());

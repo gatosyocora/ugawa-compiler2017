@@ -8,6 +8,9 @@ import parser.TinyPiSLexer;
 import parser.TinyPiSParser;
 
 public class Compiler extends CompilerBase {
+	
+	String printLabel;
+	
 	void compileExpr(ASTNode ndx, Environment env) {
 		if (ndx instanceof ASTBinaryExprNode) {
 			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
@@ -86,6 +89,8 @@ public class Compiler extends CompilerBase {
 		emitLDR("r0", REG_DST, 0);
 		emitRI("mov", "r7", 1);   // EXIT のシステムコール番号
 		emitI("swi", 0);
+		
+		printCode();
 	}
 	
 	void compileStmt(ASTNode ndx, Environment env) {
@@ -129,8 +134,63 @@ public class Compiler extends CompilerBase {
 			compileStmt(nd.stmt, env);
 			emitJMP("b", startLabel);
 			emitLabel(endLabel);
+		} else if (ndx instanceof ASTPrintStmtNode) {
+			ASTPrintStmtNode nd = (ASTPrintStmtNode) ndx;
+			compileExpr(nd.expr, env);
+			emitCALL(FUNCTION_PRINT);
 		} else
 			throw new Error("Unknown expression: " + ndx);
+	}
+	
+	void printCode() {
+
+		System.out.println(FUNCTION_PRINT+":");
+		
+		emitPUSH(REG_DST); //push!
+		emitPUSH(REG_R1); // push!
+		emitPUSH("r2"); // push!
+		
+		emitLDC(REG_R1, "buf"); // 先頭の番地
+		emitRRI("add", REG_R1, REG_R1, 8); // 末尾の番地
+		
+		System.out.println("loop:");
+		emitRRI("and", "r2", REG_DST, 0xf); // あまりを計算
+		emitRI("cmp", "r2", 10); // 10より大きいか
+		
+		emitRRI("add", "r2", "r2", '0'); // 文字に変換
+		
+		// 10~15の時
+		emitRRI("addcs", "r2", "r2", 39); // '0' + 39 = 'a'
+		
+		emitRRI("sub", REG_R1, REG_R1, 1);
+		//emitSTR("r2", REG_R1, 0); // レジスタに格納、書き込み先更新
+		System.out.println("\tstrb r2, ["+REG_R1+"]");
+		
+		// 次の数へ
+		emitRRI("lsr", REG_DST, REG_DST, 4); // 割られる数(r4 = r4 / 16)
+		emitRI("cmp", REG_DST, 0); // 0かどうか比較
+		emitJMP("bne", "loop"); // ０でなければループ
+		
+		/* 表示 */
+		emitRI("mov", "r7", 4); // writeシステムコール番号
+		emitLDC(REG_R1, "buf"); // 先頭番地
+		emitRI("mov", REG_DST, 1); // 標準出力
+		emitRI("mov", "r2", 9); // 文字の長さ+1
+		emitI("swi", 0);
+		
+		emitPOP("r2");// pop!
+		emitPOP(REG_R1);// pop!
+		emitPOP(REG_DST);// pop!
+		
+		emitRET();
+		
+		/* データ部 */
+		System.out.println("\t.section .data");
+
+		System.out.println("\t@ print用のデータ");
+		System.out.println("buf:");
+		System.out.println("\t.space 8, '0'");
+		System.out.println("\t.byte	0x0a @ 末端文字");
 	}
 
 	public static void main(String[] args) throws IOException {

@@ -1,0 +1,9 @@
+var xxx;
+var yyy;
+{
+xxx = 100;
+yyy = 20;
+print xxx + yyy;
+print yyy;
+answer = xxx;
+}
