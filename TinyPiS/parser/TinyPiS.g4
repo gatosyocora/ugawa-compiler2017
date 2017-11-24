@@ -26,12 +26,12 @@ mulExpr: mulExpr MULOP unaryExpr
 
 unaryExpr: VALUE			# literalExpr
 	| IDENTIFIER			# varExpr
-	| '(' expr ')'			# parenExpr
+	| '(' expr ')'		# parenExpr
 	;
 
 ADDOP: '+'|'-';
 MULOP: '*'|'/';
 
-IDENTIFIER: 'x'|'y'|'z'|'answer';
+IDENTIFIER: 'x'|'y'|'z'|'answer'|[a-zA-Z_][a-zA-Z_0-9]+;
 VALUE: [0-9]+;
 WS: [ \t\r\n] -> skip;
