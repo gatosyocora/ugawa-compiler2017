@@ -170,3 +170,16 @@ class ASTCallNode extends ASTNode {
 		return s;
 	}
 }
+
+class ASTUnaryNode extends ASTNode {
+	String op;
+	ASTNode operand;
+	ASTUnaryNode(String op, ASTNode operand) {
+		this.op = op;
+		this.operand = operand;
+	}
+	@Override
+	public String toString() {
+		return "(UnaRef "+op+" "+operand+")";
+	}
+}

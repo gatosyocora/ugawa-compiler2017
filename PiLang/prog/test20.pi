@@ -1,0 +1,16 @@
+var aaa;
+var bbb;
+
+function main() {
+	var ccc;
+	aaa = 10;
+	bbb = 15;
+	ccc = aaa & bbb;
+	return x(~ccc);
+}
+function x(ddd) {
+	var eee;
+	eee = bbb;
+	ddd = -ddd;
+	return eee | ddd;
+}

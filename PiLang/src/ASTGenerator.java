@@ -18,6 +18,10 @@ import parser.PiLangParser.ReturnStmtContext;
 import parser.PiLangParser.StmtContext;
 import parser.PiLangParser.VarExprContext;
 import parser.PiLangParser.WhileStmtContext;
+import parser.PiLangParser.NotExprContext;
+import parser.PiLangParser.SubExprContext;
+import parser.PiLangParser.AndExprContext;
+import parser.PiLangParser.OrExprContext;
 
 public class ASTGenerator {	
 	ASTFunctionNode translateFuncDecl(FuncDeclContext ctx) {
@@ -84,14 +88,34 @@ public class ASTGenerator {
 			return new ASTReturnNode(expr);
 		} else if (ctxx instanceof ExprContext) {
 			ExprContext ctx = (ExprContext) ctxx;
-			return translate(ctx.addExpr());
+			return translate(ctx.andExpr());
+		}else if (ctxx instanceof AndExprContext) { // andExpr
+			AndExprContext ctx = (AndExprContext) ctxx;
+			if (ctx.andExpr() == null)
+				return translate(ctx.orExpr());
+			ASTNode lhs = translate(ctx.andExpr());
+			ASTNode rhs = translate(ctx.orExpr());
+			return new ASTBinaryExprNode(ctx.ANDOP().getText(), lhs, rhs);
+		} else if (ctxx instanceof OrExprContext) { // orExpr
+			OrExprContext ctx = (OrExprContext) ctxx;
+			if (ctx.orExpr() == null)
+				return translate(ctx.addExpr());
+			ASTNode lhs = translate(ctx.orExpr());
+			ASTNode rhs = translate(ctx.addExpr());
+			return new ASTBinaryExprNode(ctx.OROP().getText(), lhs, rhs);
 		} else if (ctxx instanceof AddExprContext) {
 			AddExprContext ctx = (AddExprContext) ctxx;
+			String calc;
 			if (ctx.addExpr() == null)
 				return translate(ctx.mulExpr());
+			if (ctx.ADDOP() != null) {
+				calc = ctx.ADDOP().getText();
+			} else {
+				calc = ctx.SUBOP().getText();
+			}
 			ASTNode lhs = translate(ctx.addExpr());
 			ASTNode rhs = translate(ctx.mulExpr());
-			return new ASTBinaryExprNode(ctx.ADDOP().getText(), lhs, rhs);
+			return new ASTBinaryExprNode(calc, lhs, rhs);
 		} else if (ctxx instanceof MulExprContext) {
 			MulExprContext ctx = (MulExprContext) ctxx;
 			if (ctx.mulExpr() == null)
@@ -110,7 +134,15 @@ public class ASTGenerator {
 		} else if (ctxx instanceof ParenExprContext) {
 			ParenExprContext ctx = (ParenExprContext) ctxx;
 			return translate(ctx.expr());
-		} else if (ctxx instanceof CallExprContext) {
+		} else if (ctxx instanceof SubExprContext) { // subExpr
+			SubExprContext ctx = (SubExprContext) ctxx;
+			ASTNode rhs = translate(ctx.expr());
+			return new ASTUnaryNode(ctx.SUBOP().getText(), rhs);
+		} else if (ctxx instanceof NotExprContext) { // notExpr
+			NotExprContext ctx = (NotExprContext) ctxx;
+			ASTNode rhs = translate(ctx.expr());
+			return new ASTUnaryNode(ctx.NOTOP().getText(), rhs);
+		}else if (ctxx instanceof CallExprContext) {
 			CallExprContext ctx = (CallExprContext) ctxx;
 			String funcName = ctx.IDENTIFIER().getText();
 			ArrayList<ASTNode> args = new ArrayList<ASTNode>();
