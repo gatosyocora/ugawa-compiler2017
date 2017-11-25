@@ -1,0 +1,8 @@
+var abc;
+function main() {
+	var xyz;
+	abc = 100;
+	xyz = 160;
+	print xyz;
+	return abc;
+}
