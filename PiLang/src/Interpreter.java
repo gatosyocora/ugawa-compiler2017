@@ -35,22 +35,92 @@ public class Interpreter extends InterpreterBase {
 			env.push(var);
 		}
 
-		/* ローカル変数を追加するコードをここに書く */
-
+		/* ローカル変数を追加するコードをここに書く(書いた) */
+		for (String name: nd.varDecls) {
+			Variable var = new Variable(name);
+			var.set(0);
+			env.push(var);
+		}
+		
 		for (ASTNode stmt: nd.stmts) {
 			ReturnValue retval = evalStmt(stmt, env);
-			if (retval != null)
+			if (retval != null) 
 				return retval.value;
 		}
 		return 0;
 	}
 
 	ReturnValue evalStmt(ASTNode ndx, Environment env) {
-		/* ここを完成させる */
+		if (ndx instanceof ASTCompoundStmtNode) {
+			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
+			ArrayList<ASTNode> stmts = nd.stmts;
+			for (ASTNode child: stmts)
+				return evalStmt(child, env);
+		} else if (ndx instanceof ASTAssignStmtNode) {
+			ASTAssignStmtNode nd =(ASTAssignStmtNode) ndx;
+			Variable var = env.lookup(nd.var);
+			if (var == null)
+				var = globalEnv.lookup(nd.var);
+			if (var == null)
+				throw new Error("undefined variable: " + nd.var);
+			int value = evalExpr(nd.expr, env);
+			var.set(value);
+		} else if (ndx instanceof ASTIfStmtNode) {
+			ASTIfStmtNode nd =(ASTIfStmtNode) ndx;
+			if (evalExpr(nd.cond, env) != 0)
+				return evalStmt(nd.thenClause, env);
+			else
+				return evalStmt(nd.elseClause, env);
+		} else if (ndx instanceof ASTWhileStmtNode) {
+			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
+			if (evalExpr(nd.cond, env) != 1)
+				return evalStmt(nd.stmt, env);
+		} else if (ndx instanceof ASTReturnNode) {
+			ASTReturnNode nd = (ASTReturnNode) ndx;
+			int value = evalExpr(nd.expr, env);
+			return new ReturnValue(value);
+		} else
+			throw new Error("Unknown statement: " +ndx);
+		return null;
 	}
 	
 	int evalExpr(ASTNode ndx, Environment env) {
-		/* ここを完成させる */
+		if (ndx instanceof ASTBinaryExprNode) {
+			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
+			int lhsValue = evalExpr(nd.lhs, env);
+			int rhsValue = evalExpr(nd.rhs, env);
+			if (nd.op.equals("+"))
+				return lhsValue + rhsValue;
+			else if (nd.op.equals("-"))
+				return lhsValue - rhsValue;
+			else if (nd.op.equals("*"))
+				return lhsValue * rhsValue;
+			else if (nd.op.equals("/"))
+				return lhsValue / rhsValue;
+			else
+				throw new Error("Unknwon operator: "+nd.op);
+		} else if (ndx instanceof ASTCallNode) {
+			ASTCallNode nd = (ASTCallNode) ndx;
+			ASTFunctionNode func = lookupFunction(nd.name);
+			ArrayList<Integer> args = new ArrayList<Integer>();
+			for (ASTNode argNode: nd.args) {
+				int arg = evalExpr(argNode, env);
+				args.add(arg);
+			}
+			return evalFunction(func, args);
+		} else if (ndx instanceof ASTNumberNode) {
+			ASTNumberNode nd = (ASTNumberNode) ndx;
+			return nd.value;
+		} else if (ndx instanceof ASTVarRefNode) {
+			ASTVarRefNode nd = (ASTVarRefNode) ndx;
+			Variable var = env.lookup(nd.varName); // 引数から探す
+			if (var == null)
+				var = globalEnv.lookup(nd.varName); // グローバル変数から探す
+			if (var == null)
+				throw new Error("Undefined variable: "+nd.varName);
+			return var.get();
+		} else
+			throw new Error("Unknown expression: "+ndx);
 	}
 	
 	public int eval(ASTNode ast) {
@@ -61,7 +131,6 @@ public class Interpreter extends InterpreterBase {
 				throw new Error("Variable redefined: "+varName);
 			addGlobalVariable(globalEnv, varName, 0);
 		}
-		
 		ASTFunctionNode mainFunc = lookupFunction("main");
 		ArrayList<Integer> args = new ArrayList<Integer>();
 		int answer = evalFunction(mainFunc, args);

@@ -1,0 +1,13 @@
+var x;
+
+function main() {
+ x = 0;
+ return y(4);
+}
+
+function y(z) {
+if (x)
+	return z;
+else
+	return 1;
+}
