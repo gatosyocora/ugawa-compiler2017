@@ -53,7 +53,6 @@ public class Compiler extends CompilerBase {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			for (ASTNode stmt: nd.stmts) {
 				compileStmt(stmt, epilogueLabel, env);
-				emitJMP("b", epilogueLabel);
 			}
 		} else if (ndx instanceof ASTAssignStmtNode) {
 			ASTAssignStmtNode nd = (ASTAssignStmtNode) ndx;
@@ -80,11 +79,9 @@ public class Compiler extends CompilerBase {
 			emitRI("cmp", REG_DST, 0);
 			emitJMP("beq", elseLabel);
 			compileStmt(nd.thenClause, epilogueLabel, env);
-			emitJMP("b", epilogueLabel);
 			emitJMP("b", endLabel);
 			emitLabel(elseLabel);
 			compileStmt(nd.elseClause, epilogueLabel, env);
-			emitJMP("b", epilogueLabel);
 			emitLabel(endLabel);
 		} else if (ndx instanceof ASTWhileStmtNode) {
 			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
@@ -95,12 +92,12 @@ public class Compiler extends CompilerBase {
 			emitRI("cmp", REG_DST, 1);
 			emitJMP("beq", endLabel);
 			compileStmt(nd.stmt, epilogueLabel, env);
-			emitJMP("b", epilogueLabel);
 			emitJMP("b", startLabel);
 			emitLabel(endLabel);
 		} else if (ndx instanceof ASTReturnNode) {
 			ASTReturnNode nd = (ASTReturnNode) ndx;
 			compileExpr(nd.expr, env);
+			emitJMP("b", epilogueLabel);
 		} else
 			throw new Error("Unknown expression: " + ndx);
 	}
