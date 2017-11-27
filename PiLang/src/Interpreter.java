@@ -55,12 +55,13 @@ public class Interpreter extends InterpreterBase {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			ArrayList<ASTNode> stmts = nd.stmts;
 			for (ASTNode child: stmts)
-				return evalStmt(child, env);
+				evalStmt(child, env);
 		} else if (ndx instanceof ASTAssignStmtNode) {
 			ASTAssignStmtNode nd =(ASTAssignStmtNode) ndx;
 			Variable var = env.lookup(nd.var);
-			if (var == null)
+			if (var == null) {
 				var = globalEnv.lookup(nd.var);
+			}
 			if (var == null)
 				throw new Error("undefined variable: " + nd.var);
 			int value = evalExpr(nd.expr, env);
@@ -68,13 +69,14 @@ public class Interpreter extends InterpreterBase {
 		} else if (ndx instanceof ASTIfStmtNode) {
 			ASTIfStmtNode nd =(ASTIfStmtNode) ndx;
 			if (evalExpr(nd.cond, env) != 0)
-				return evalStmt(nd.thenClause, env);
+				evalStmt(nd.thenClause, env);
 			else
-				return evalStmt(nd.elseClause, env);
+				evalStmt(nd.elseClause, env);
 		} else if (ndx instanceof ASTWhileStmtNode) {
 			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
-			if (evalExpr(nd.cond, env) != 1)
-				return evalStmt(nd.stmt, env);
+			while (evalExpr(nd.cond, env) != 0) {
+				evalStmt(nd.stmt, env);
+			}
 		} else if (ndx instanceof ASTReturnNode) {
 			ASTReturnNode nd = (ASTReturnNode) ndx;
 			int value = evalExpr(nd.expr, env);
