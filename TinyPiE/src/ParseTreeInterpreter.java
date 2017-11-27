@@ -19,22 +19,22 @@ public class ParseTreeInterpreter extends InterpreterBase {
 	int evalExpr(ParseTree ctxx, Environment env) {
 		if (ctxx instanceof ExprContext) { // expr
 			ExprContext ctx = (ExprContext) ctxx;
-			return evalExpr(ctx.andExpr(), env);
-		} else if (ctxx instanceof AndExprContext) { // andExpr
-			AndExprContext ctx = (AndExprContext) ctxx;
-			if (ctx.andExpr() == null)
-				return evalExpr(ctx.orExpr(), env);
-			int lhsValue = evalExpr(ctx.andExpr(), env);
-			int rhsValue = evalExpr(ctx.orExpr(), env);
-			return lhsValue & rhsValue;
+			return evalExpr(ctx.orExpr(), env);
 		} else if (ctxx instanceof OrExprContext) { // orExpr
 			OrExprContext ctx = (OrExprContext) ctxx;
 			if (ctx.orExpr() == null)
-				return evalExpr(ctx.addExpr(), env);
+				return evalExpr(ctx.andExpr(), env);
 			int lhsValue = evalExpr(ctx.orExpr(), env);
-			int rhsValue = evalExpr(ctx.addExpr(), env);
+			int rhsValue = evalExpr(ctx.andExpr(), env);
 			return lhsValue | rhsValue;
-		} else if (ctxx instanceof AddExprContext) { // addExpr
+		} else if (ctxx instanceof AndExprContext) { // andExpr
+			AndExprContext ctx = (AndExprContext) ctxx;
+			if (ctx.andExpr() == null)
+				return evalExpr(ctx.addExpr(), env);
+			int lhsValue = evalExpr(ctx.andExpr(), env);
+			int rhsValue = evalExpr(ctx.addExpr(), env);
+			return lhsValue & rhsValue;
+		}  else if (ctxx instanceof AddExprContext) { // addExpr
 			AddExprContext ctx = (AddExprContext) ctxx;
 			if (ctx.addExpr() == null)
 				return evalExpr(ctx.mulExpr(), env);
