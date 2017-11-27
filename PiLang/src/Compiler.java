@@ -9,6 +9,7 @@ import parser.PiLangParser;
 
 public class Compiler extends CompilerBase {
 	Environment globalEnv;
+	boolean isUsedPrint = false;
 	
 	void compileFunction(ASTFunctionNode nd) {
 		Environment env = new Environment();
@@ -22,7 +23,7 @@ public class Compiler extends CompilerBase {
 		}
 		
 		emitLabel(nd.name);
-		System.out.println("\t@prologue");
+		System.out.println("\t@ prologue");
 		emitPUSH(REG_FP);
 		emitRR("mov", REG_FP, REG_SP);
 		emitPUSH(REG_LR);
@@ -39,7 +40,7 @@ public class Compiler extends CompilerBase {
 			compileStmt(stmt, epilogueLabel, env);
 		emitRI("mov", REG_DST, 0); // returnがなかったときの戻り値0
 		emitLabel(epilogueLabel);
-		System.out.println("\t@epilogue");
+		System.out.println("\t@ epilogue");
 		emitRRI("add", REG_SP, REG_SP, nd.varDecls.size() * 4);
 		emitPOP(REG_R1);
 		emitPOP(REG_LR);
@@ -49,12 +50,12 @@ public class Compiler extends CompilerBase {
 	
 	void compileStmt(ASTNode ndx, String epilogueLabel, Environment env) {
 		
-		if (ndx instanceof ASTCompoundStmtNode) {
+		if (ndx instanceof ASTCompoundStmtNode) {					// compoundStmt
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			for (ASTNode stmt: nd.stmts) {
 				compileStmt(stmt, epilogueLabel, env);
 			}
-		} else if (ndx instanceof ASTAssignStmtNode) {
+		} else if (ndx instanceof ASTAssignStmtNode) {			// assignStmt
 			ASTAssignStmtNode nd = (ASTAssignStmtNode) ndx;
 			Variable var = env.lookup(nd.var);
 			if (var == null)
@@ -62,16 +63,16 @@ public class Compiler extends CompilerBase {
 			if (var == null) 
 				throw new Error("undefined variable: " + nd.var);
 			compileExpr(nd.expr, env);
-			if (var instanceof GlobalVariable) {
+			if (var instanceof GlobalVariable) {					// assignStmt.globalVariable
 				GlobalVariable globalVar = (GlobalVariable) var;
 				emitLDC(REG_R1, globalVar.getLabel());
 				emitSTR(REG_DST, REG_R1, 0);
-			} else {
+			} else {													// assignStmt.localVariable
 				LocalVariable localVar = (LocalVariable) var;
 				int offset = localVar.offset;
 				emitSTR(REG_DST, REG_FP, offset);
 			}
-		} else if (ndx instanceof ASTIfStmtNode) {
+		} else if (ndx instanceof ASTIfStmtNode) {				// ifStmt
 			ASTIfStmtNode nd = (ASTIfStmtNode) ndx;
 			String elseLabel = freshLabel();
 			String endLabel = freshLabel();
@@ -83,7 +84,7 @@ public class Compiler extends CompilerBase {
 			emitLabel(elseLabel);
 			compileStmt(nd.elseClause, epilogueLabel, env);
 			emitLabel(endLabel);
-		} else if (ndx instanceof ASTWhileStmtNode) {
+		} else if (ndx instanceof ASTWhileStmtNode) {				// whileStmt
 			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
 			String startLabel = freshLabel();
 			String endLabel = freshLabel();
@@ -94,12 +95,13 @@ public class Compiler extends CompilerBase {
 			compileStmt(nd.stmt, epilogueLabel, env);
 			emitJMP("b", startLabel);
 			emitLabel(endLabel);
-		} else if (ndx instanceof ASTReturnNode) {
+		} else if (ndx instanceof ASTReturnNode) {  				// returnStmt
 			ASTReturnNode nd = (ASTReturnNode) ndx;
 			compileExpr(nd.expr, env);
 			emitJMP("b", epilogueLabel);
-		} else if (ndx instanceof ASTPrintStmtNode) {
+		} else if (ndx instanceof ASTPrintStmtNode) {				// printStmt
 			ASTPrintStmtNode nd = (ASTPrintStmtNode) ndx;
+			isUsedPrint = true;
 			compileExpr(nd.expr, env);
 			emitCALL(FUNCTION_PRINT);
 		} else
@@ -107,7 +109,7 @@ public class Compiler extends CompilerBase {
 	}
 
 	void compileExpr(ASTNode ndx, Environment env) {
-		if (ndx instanceof ASTBinaryExprNode) {
+		if (ndx instanceof ASTBinaryExprNode) {					// binaryExpr
 			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
 			compileExpr(nd.lhs, env);
 			emitPUSH(REG_R1);
@@ -132,7 +134,7 @@ public class Compiler extends CompilerBase {
 			else
 				throw new Error("Unknwon operator: "+nd.op);
 			emitPOP(REG_R1);
-		} else if (ndx instanceof ASTCallNode) {
+		} else if (ndx instanceof ASTCallNode) {					// callExpr
 			ASTCallNode nd = (ASTCallNode) ndx;
 			for (int i = nd.args.size()-1;i >= 0;i--) {
 				ASTNode arg = nd.args.get(i);
@@ -141,26 +143,26 @@ public class Compiler extends CompilerBase {
 			}
 			emitCALL(nd.name);
 			emitRRI("add", REG_SP, REG_SP, nd.args.size() * 4);
-		} else if (ndx instanceof ASTNumberNode) {
+		} else if (ndx instanceof ASTNumberNode) {				// numberExpr
 			ASTNumberNode nd = (ASTNumberNode) ndx;
 			emitLDC(REG_DST, nd.value);
-		} else if (ndx instanceof ASTVarRefNode) {
+		} else if (ndx instanceof ASTVarRefNode) {				// varRefExpr
 			ASTVarRefNode nd = (ASTVarRefNode) ndx;
 			Variable var = env.lookup(nd.varName);
 			if (var == null)
 				var = globalEnv.lookup(nd.varName);
 			if (var == null)
 				throw new Error("Undefined variable: " + nd.varName);
-			if (var instanceof GlobalVariable) {
+			if (var instanceof GlobalVariable) {					// varRefExpr.globalVariable
 				GlobalVariable globalVar = (GlobalVariable) var;
 				emitLDC(REG_DST, globalVar.getLabel());
 				emitLDR(REG_DST, REG_DST, 0);
-			} else {
+			} else {													// varRefExpr.localVariable
 				LocalVariable localVar = (LocalVariable) var;
 				int offset = localVar.offset;
 				emitLDR(REG_DST, REG_FP, offset);
 			}
-		} else if (ndx instanceof ASTUnaryNode) {
+		} else if (ndx instanceof ASTUnaryNode) {					// unaryExpr
 			ASTUnaryNode nd = (ASTUnaryNode) ndx;
 			compileExpr(nd.operand, env);
 			if (nd.op.equals("-")) {
@@ -202,8 +204,10 @@ public class Compiler extends CompilerBase {
 		for (ASTFunctionNode func: program.funcDecls)
 			compileFunction(func);
 		
-		/* プリント文を実装するためのプログラム */
-		printCode();
+		if (isUsedPrint) {
+			/* プリント文を実装するためのプログラム */
+			printCode();
+		}
 	}
 	
 	void printCode() {
