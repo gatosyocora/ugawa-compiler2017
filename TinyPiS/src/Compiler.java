@@ -129,7 +129,7 @@ public class Compiler extends CompilerBase {
 			String endLabel = freshLabel();
 			emitLabel(startLabel);
 			compileExpr(nd.cond, env);
-			emitRI("cmp", REG_DST, 1);
+			emitRI("cmp", REG_DST, 0);
 			emitJMP("beq", endLabel);
 			compileStmt(nd.stmt, env);
 			emitJMP("b", startLabel);
