@@ -21,10 +21,10 @@ public class TinyPiSParser extends Parser {
 		T__9=10, T__10=11, NOTOP=12, ADDOP=13, SUBOP=14, MULOP=15, ANDOP=16, OROP=17, 
 		IDENTIFIER=18, VALUE=19, WS=20;
 	public static final int
-		RULE_prog = 0, RULE_varDecls = 1, RULE_stmt = 2, RULE_expr = 3, RULE_andExpr = 4, 
-		RULE_orExpr = 5, RULE_addExpr = 6, RULE_mulExpr = 7, RULE_unaryExpr = 8;
+		RULE_prog = 0, RULE_varDecls = 1, RULE_stmt = 2, RULE_expr = 3, RULE_orExpr = 4, 
+		RULE_andExpr = 5, RULE_addExpr = 6, RULE_mulExpr = 7, RULE_unaryExpr = 8;
 	public static final String[] ruleNames = {
-		"prog", "varDecls", "stmt", "expr", "andExpr", "orExpr", "addExpr", "mulExpr", 
+		"prog", "varDecls", "stmt", "expr", "orExpr", "andExpr", "addExpr", "mulExpr", 
 		"unaryExpr"
 	};
 
@@ -336,8 +336,8 @@ public class TinyPiSParser extends Parser {
 	}
 
 	public static class ExprContext extends ParserRuleContext {
-		public AndExprContext andExpr() {
-			return getRuleContext(AndExprContext.class,0);
+		public OrExprContext orExpr() {
+			return getRuleContext(OrExprContext.class,0);
 		}
 		public ExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -352,7 +352,7 @@ public class TinyPiSParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(62);
-			andExpr(0);
+			orExpr(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -366,80 +366,9 @@ public class TinyPiSParser extends Parser {
 		return _localctx;
 	}
 
-	public static class AndExprContext extends ParserRuleContext {
-		public OrExprContext orExpr() {
-			return getRuleContext(OrExprContext.class,0);
-		}
+	public static class OrExprContext extends ParserRuleContext {
 		public AndExprContext andExpr() {
 			return getRuleContext(AndExprContext.class,0);
-		}
-		public TerminalNode ANDOP() { return getToken(TinyPiSParser.ANDOP, 0); }
-		public AndExprContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_andExpr; }
-	}
-
-	public final AndExprContext andExpr() throws RecognitionException {
-		return andExpr(0);
-	}
-
-	private AndExprContext andExpr(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		AndExprContext _localctx = new AndExprContext(_ctx, _parentState);
-		AndExprContext _prevctx = _localctx;
-		int _startState = 8;
-		enterRecursionRule(_localctx, 8, RULE_andExpr, _p);
-		try {
-			int _alt;
-			enterOuterAlt(_localctx, 1);
-			{
-			{
-			setState(65);
-			orExpr(0);
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(72);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new AndExprContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_andExpr);
-					setState(67);
-					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(68);
-					match(ANDOP);
-					setState(69);
-					orExpr(0);
-					}
-					} 
-				}
-				setState(74);
-				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			unrollRecursionContexts(_parentctx);
-		}
-		return _localctx;
-	}
-
-	public static class OrExprContext extends ParserRuleContext {
-		public AddExprContext addExpr() {
-			return getRuleContext(AddExprContext.class,0);
 		}
 		public OrExprContext orExpr() {
 			return getRuleContext(OrExprContext.class,0);
@@ -460,8 +389,79 @@ public class TinyPiSParser extends Parser {
 		int _parentState = getState();
 		OrExprContext _localctx = new OrExprContext(_ctx, _parentState);
 		OrExprContext _prevctx = _localctx;
+		int _startState = 8;
+		enterRecursionRule(_localctx, 8, RULE_orExpr, _p);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(65);
+			andExpr(0);
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(72);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					{
+					_localctx = new OrExprContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_orExpr);
+					setState(67);
+					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+					setState(68);
+					match(OROP);
+					setState(69);
+					andExpr(0);
+					}
+					} 
+				}
+				setState(74);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class AndExprContext extends ParserRuleContext {
+		public AddExprContext addExpr() {
+			return getRuleContext(AddExprContext.class,0);
+		}
+		public AndExprContext andExpr() {
+			return getRuleContext(AndExprContext.class,0);
+		}
+		public TerminalNode ANDOP() { return getToken(TinyPiSParser.ANDOP, 0); }
+		public AndExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_andExpr; }
+	}
+
+	public final AndExprContext andExpr() throws RecognitionException {
+		return andExpr(0);
+	}
+
+	private AndExprContext andExpr(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		AndExprContext _localctx = new AndExprContext(_ctx, _parentState);
+		AndExprContext _prevctx = _localctx;
 		int _startState = 10;
-		enterRecursionRule(_localctx, 10, RULE_orExpr, _p);
+		enterRecursionRule(_localctx, 10, RULE_andExpr, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -480,12 +480,12 @@ public class TinyPiSParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new OrExprContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_orExpr);
+					_localctx = new AndExprContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_andExpr);
 					setState(78);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(79);
-					match(OROP);
+					match(ANDOP);
 					setState(80);
 					addExpr(0);
 					}
@@ -782,9 +782,9 @@ public class TinyPiSParser extends Parser {
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
 		case 4:
-			return andExpr_sempred((AndExprContext)_localctx, predIndex);
-		case 5:
 			return orExpr_sempred((OrExprContext)_localctx, predIndex);
+		case 5:
+			return andExpr_sempred((AndExprContext)_localctx, predIndex);
 		case 6:
 			return addExpr_sempred((AddExprContext)_localctx, predIndex);
 		case 7:
@@ -792,14 +792,14 @@ public class TinyPiSParser extends Parser {
 		}
 		return true;
 	}
-	private boolean andExpr_sempred(AndExprContext _localctx, int predIndex) {
+	private boolean orExpr_sempred(OrExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
 			return precpred(_ctx, 2);
 		}
 		return true;
 	}
-	private boolean orExpr_sempred(OrExprContext _localctx, int predIndex) {
+	private boolean andExpr_sempred(AndExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 1:
 			return precpred(_ctx, 2);
@@ -843,9 +843,9 @@ public class TinyPiSParser extends Parser {
 		"\2\2\62\63\5\6\4\2\63?\3\2\2\2\64\65\7\f\2\2\65\66\7\t\2\2\66\67\5\b\5"+
 		"\2\678\7\n\2\289\5\6\4\29?\3\2\2\2:;\7\r\2\2;<\5\b\5\2<=\7\4\2\2=?\3\2"+
 		"\2\2>\37\3\2\2\2>\'\3\2\2\2>,\3\2\2\2>\64\3\2\2\2>:\3\2\2\2?\7\3\2\2\2"+
-		"@A\5\n\6\2A\t\3\2\2\2BC\b\6\1\2CD\5\f\7\2DJ\3\2\2\2EF\f\4\2\2FG\7\22\2"+
+		"@A\5\n\6\2A\t\3\2\2\2BC\b\6\1\2CD\5\f\7\2DJ\3\2\2\2EF\f\4\2\2FG\7\23\2"+
 		"\2GI\5\f\7\2HE\3\2\2\2IL\3\2\2\2JH\3\2\2\2JK\3\2\2\2K\13\3\2\2\2LJ\3\2"+
-		"\2\2MN\b\7\1\2NO\5\16\b\2OU\3\2\2\2PQ\f\4\2\2QR\7\23\2\2RT\5\16\b\2SP"+
+		"\2\2MN\b\7\1\2NO\5\16\b\2OU\3\2\2\2PQ\f\4\2\2QR\7\22\2\2RT\5\16\b\2SP"+
 		"\3\2\2\2TW\3\2\2\2US\3\2\2\2UV\3\2\2\2V\r\3\2\2\2WU\3\2\2\2XY\b\b\1\2"+
 		"YZ\5\20\t\2Zc\3\2\2\2[\\\f\5\2\2\\]\7\17\2\2]b\5\20\t\2^_\f\4\2\2_`\7"+
 		"\20\2\2`b\5\20\t\2a[\3\2\2\2a^\3\2\2\2be\3\2\2\2ca\3\2\2\2cd\3\2\2\2d"+

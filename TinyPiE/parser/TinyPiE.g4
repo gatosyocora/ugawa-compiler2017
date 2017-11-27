@@ -1,15 +1,15 @@
 // antlr4 -package parser -o antlr-generated  -no-listener parser/TinyPiE.g4
 grammar TinyPiE;
 
-expr: andExpr
+expr: orExpr
       ;
       
-andExpr: andExpr ANDOP orExpr
-   | orExpr
+orExpr: orExpr OROP andExpr
+    | andExpr
     ;
-
-orExpr: orExpr OROP addExpr
-    | addExpr
+      
+andExpr: andExpr ANDOP addExpr
+   | addExpr
     ;
 
 addExpr: addExpr ADDOP mulExpr

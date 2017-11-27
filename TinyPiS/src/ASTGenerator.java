@@ -58,22 +58,22 @@ public class ASTGenerator {
  			return new ASTPrintStmtNode(expr);
 		} else if (ctxx instanceof ExprContext) { // expr
 			ExprContext ctx = (ExprContext) ctxx;
-			return translate(ctx.andExpr());
-		} else if (ctxx instanceof AndExprContext) { // andExpr
-			AndExprContext ctx = (AndExprContext) ctxx;
-			if (ctx.andExpr() == null)
-				return translate(ctx.orExpr());
-			ASTNode lhs = translate(ctx.andExpr());
-			ASTNode rhs = translate(ctx.orExpr());
-			return new ASTBinaryExprNode(ctx.ANDOP().getText(), lhs, rhs);
+			return translate(ctx.orExpr());
 		} else if (ctxx instanceof OrExprContext) { // orExpr
 			OrExprContext ctx = (OrExprContext) ctxx;
 			if (ctx.orExpr() == null)
-				return translate(ctx.addExpr());
+				return translate(ctx.andExpr());
 			ASTNode lhs = translate(ctx.orExpr());
-			ASTNode rhs = translate(ctx.addExpr());
+			ASTNode rhs = translate(ctx.andExpr());
 			return new ASTBinaryExprNode(ctx.OROP().getText(), lhs, rhs);
-		} else if (ctxx instanceof AddExprContext) { // addExpr
+		} else if (ctxx instanceof AndExprContext) { // andExpr
+			AndExprContext ctx = (AndExprContext) ctxx;
+			if (ctx.andExpr() == null)
+				return translate(ctx.addExpr());
+			ASTNode lhs = translate(ctx.andExpr());
+			ASTNode rhs = translate(ctx.addExpr());
+			return new ASTBinaryExprNode(ctx.ANDOP().getText(), lhs, rhs);
+		}  else if (ctxx instanceof AddExprContext) { // addExpr
 			AddExprContext ctx = (AddExprContext) ctxx;
 			String calc;
 			if (ctx.addExpr() == null)

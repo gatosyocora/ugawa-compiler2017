@@ -15,22 +15,22 @@ public class ASTGenerator {
 	ASTNode translateExpr(ParseTree ctxx) {
 		if (ctxx instanceof ExprContext) { // expr
 			ExprContext ctx = (ExprContext) ctxx;
-			return translateExpr(ctx.andExpr());
-		} else if (ctxx instanceof AndExprContext) { // andExpr
-			AndExprContext ctx = (AndExprContext) ctxx;
-			if (ctx.andExpr() == null)
-				return translateExpr(ctx.orExpr());
-			ASTNode lhs = translateExpr(ctx.andExpr());
-			ASTNode rhs = translateExpr(ctx.orExpr());
-			return new ASTBinaryExprNode(ctx.ANDOP().getText(), lhs, rhs);
+			return translateExpr(ctx.orExpr());
 		} else if (ctxx instanceof OrExprContext) { // orExpr
 			OrExprContext ctx = (OrExprContext) ctxx;
 			if (ctx.orExpr() == null)
-				return translateExpr(ctx.addExpr());
+				return translateExpr(ctx.andExpr());
 			ASTNode lhs = translateExpr(ctx.orExpr());
-			ASTNode rhs = translateExpr(ctx.addExpr());
+			ASTNode rhs = translateExpr(ctx.andExpr());
 			return new ASTBinaryExprNode(ctx.OROP().getText(), lhs, rhs);
-		}else if (ctxx instanceof AddExprContext) { // addExpr
+		} else if (ctxx instanceof AndExprContext) { // andExpr
+			AndExprContext ctx = (AndExprContext) ctxx;
+			if (ctx.andExpr() == null)
+				return translateExpr(ctx.addExpr());
+			ASTNode lhs = translateExpr(ctx.andExpr());
+			ASTNode rhs = translateExpr(ctx.addExpr());
+			return new ASTBinaryExprNode(ctx.ANDOP().getText(), lhs, rhs);
+		} else if (ctxx instanceof AddExprContext) { // addExpr
 			AddExprContext ctx = (AddExprContext) ctxx;
 			String calc;
 			if (ctx.addExpr() == null)

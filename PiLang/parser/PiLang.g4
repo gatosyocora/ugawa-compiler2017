@@ -22,16 +22,18 @@ stmt: '{' stmt* '}'							# compoundStmt
 	| 'print' expr ';'						# printStmt
 	;
 
-expr: andExpr
+expr: orExpr
       ;
       
-andExpr: andExpr ANDOP orExpr
-   | orExpr
+orExpr: orExpr OROP andExpr
+    | andExpr
     ;
 
-orExpr: orExpr OROP addExpr
-    | addExpr
+andExpr: andExpr ANDOP addExpr
+   | addExpr
     ;
+      
+
 
 addExpr: addExpr ADDOP mulExpr
 	| addExpr SUBOP mulExpr

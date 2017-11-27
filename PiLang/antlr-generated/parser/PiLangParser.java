@@ -22,10 +22,10 @@ public class PiLangParser extends Parser {
 		MULOP=18, ANDOP=19, OROP=20, IDENTIFIER=21, VALUE=22, WS=23;
 	public static final int
 		RULE_prog = 0, RULE_funcDecl = 1, RULE_params = 2, RULE_varDecls = 3, 
-		RULE_stmt = 4, RULE_expr = 5, RULE_andExpr = 6, RULE_orExpr = 7, RULE_addExpr = 8, 
+		RULE_stmt = 4, RULE_expr = 5, RULE_orExpr = 6, RULE_andExpr = 7, RULE_addExpr = 8, 
 		RULE_mulExpr = 9, RULE_unaryExpr = 10, RULE_args = 11;
 	public static final String[] ruleNames = {
-		"prog", "funcDecl", "params", "varDecls", "stmt", "expr", "andExpr", "orExpr", 
+		"prog", "funcDecl", "params", "varDecls", "stmt", "expr", "orExpr", "andExpr", 
 		"addExpr", "mulExpr", "unaryExpr", "args"
 	};
 
@@ -504,8 +504,8 @@ public class PiLangParser extends Parser {
 	}
 
 	public static class ExprContext extends ParserRuleContext {
-		public AndExprContext andExpr() {
-			return getRuleContext(AndExprContext.class,0);
+		public OrExprContext orExpr() {
+			return getRuleContext(OrExprContext.class,0);
 		}
 		public ExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -520,7 +520,7 @@ public class PiLangParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(102);
-			andExpr(0);
+			orExpr(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -534,80 +534,9 @@ public class PiLangParser extends Parser {
 		return _localctx;
 	}
 
-	public static class AndExprContext extends ParserRuleContext {
-		public OrExprContext orExpr() {
-			return getRuleContext(OrExprContext.class,0);
-		}
+	public static class OrExprContext extends ParserRuleContext {
 		public AndExprContext andExpr() {
 			return getRuleContext(AndExprContext.class,0);
-		}
-		public TerminalNode ANDOP() { return getToken(PiLangParser.ANDOP, 0); }
-		public AndExprContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_andExpr; }
-	}
-
-	public final AndExprContext andExpr() throws RecognitionException {
-		return andExpr(0);
-	}
-
-	private AndExprContext andExpr(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		AndExprContext _localctx = new AndExprContext(_ctx, _parentState);
-		AndExprContext _prevctx = _localctx;
-		int _startState = 12;
-		enterRecursionRule(_localctx, 12, RULE_andExpr, _p);
-		try {
-			int _alt;
-			enterOuterAlt(_localctx, 1);
-			{
-			{
-			setState(105);
-			orExpr(0);
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(112);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					{
-					_localctx = new AndExprContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_andExpr);
-					setState(107);
-					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(108);
-					match(ANDOP);
-					setState(109);
-					orExpr(0);
-					}
-					} 
-				}
-				setState(114);
-				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			unrollRecursionContexts(_parentctx);
-		}
-		return _localctx;
-	}
-
-	public static class OrExprContext extends ParserRuleContext {
-		public AddExprContext addExpr() {
-			return getRuleContext(AddExprContext.class,0);
 		}
 		public OrExprContext orExpr() {
 			return getRuleContext(OrExprContext.class,0);
@@ -628,8 +557,79 @@ public class PiLangParser extends Parser {
 		int _parentState = getState();
 		OrExprContext _localctx = new OrExprContext(_ctx, _parentState);
 		OrExprContext _prevctx = _localctx;
+		int _startState = 12;
+		enterRecursionRule(_localctx, 12, RULE_orExpr, _p);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			{
+			setState(105);
+			andExpr(0);
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(112);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					{
+					_localctx = new OrExprContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_orExpr);
+					setState(107);
+					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+					setState(108);
+					match(OROP);
+					setState(109);
+					andExpr(0);
+					}
+					} 
+				}
+				setState(114);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class AndExprContext extends ParserRuleContext {
+		public AddExprContext addExpr() {
+			return getRuleContext(AddExprContext.class,0);
+		}
+		public AndExprContext andExpr() {
+			return getRuleContext(AndExprContext.class,0);
+		}
+		public TerminalNode ANDOP() { return getToken(PiLangParser.ANDOP, 0); }
+		public AndExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_andExpr; }
+	}
+
+	public final AndExprContext andExpr() throws RecognitionException {
+		return andExpr(0);
+	}
+
+	private AndExprContext andExpr(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		AndExprContext _localctx = new AndExprContext(_ctx, _parentState);
+		AndExprContext _prevctx = _localctx;
 		int _startState = 14;
-		enterRecursionRule(_localctx, 14, RULE_orExpr, _p);
+		enterRecursionRule(_localctx, 14, RULE_andExpr, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -648,12 +648,12 @@ public class PiLangParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new OrExprContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_orExpr);
+					_localctx = new AndExprContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_andExpr);
 					setState(118);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(119);
-					match(OROP);
+					match(ANDOP);
 					setState(120);
 					addExpr(0);
 					}
@@ -1037,9 +1037,9 @@ public class PiLangParser extends Parser {
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
 		case 6:
-			return andExpr_sempred((AndExprContext)_localctx, predIndex);
-		case 7:
 			return orExpr_sempred((OrExprContext)_localctx, predIndex);
+		case 7:
+			return andExpr_sempred((AndExprContext)_localctx, predIndex);
 		case 8:
 			return addExpr_sempred((AddExprContext)_localctx, predIndex);
 		case 9:
@@ -1047,14 +1047,14 @@ public class PiLangParser extends Parser {
 		}
 		return true;
 	}
-	private boolean andExpr_sempred(AndExprContext _localctx, int predIndex) {
+	private boolean orExpr_sempred(OrExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
 			return precpred(_ctx, 2);
 		}
 		return true;
 	}
-	private boolean orExpr_sempred(OrExprContext _localctx, int predIndex) {
+	private boolean andExpr_sempred(AndExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 1:
 			return precpred(_ctx, 2);
@@ -1109,9 +1109,9 @@ public class PiLangParser extends Parser {
 		"Z[\5\f\7\2[\\\7\5\2\2\\]\5\n\6\2]g\3\2\2\2^_\7\17\2\2_`\5\f\7\2`a\7\n"+
 		"\2\2ag\3\2\2\2bc\7\20\2\2cd\5\f\7\2de\7\n\2\2eg\3\2\2\2fC\3\2\2\2fK\3"+
 		"\2\2\2fP\3\2\2\2fX\3\2\2\2f^\3\2\2\2fb\3\2\2\2g\13\3\2\2\2hi\5\16\b\2"+
-		"i\r\3\2\2\2jk\b\b\1\2kl\5\20\t\2lr\3\2\2\2mn\f\4\2\2no\7\25\2\2oq\5\20"+
+		"i\r\3\2\2\2jk\b\b\1\2kl\5\20\t\2lr\3\2\2\2mn\f\4\2\2no\7\26\2\2oq\5\20"+
 		"\t\2pm\3\2\2\2qt\3\2\2\2rp\3\2\2\2rs\3\2\2\2s\17\3\2\2\2tr\3\2\2\2uv\b"+
-		"\t\1\2vw\5\22\n\2w}\3\2\2\2xy\f\4\2\2yz\7\26\2\2z|\5\22\n\2{x\3\2\2\2"+
+		"\t\1\2vw\5\22\n\2w}\3\2\2\2xy\f\4\2\2yz\7\25\2\2z|\5\22\n\2{x\3\2\2\2"+
 		"|\177\3\2\2\2}{\3\2\2\2}~\3\2\2\2~\21\3\2\2\2\177}\3\2\2\2\u0080\u0081"+
 		"\b\n\1\2\u0081\u0082\5\24\13\2\u0082\u008b\3\2\2\2\u0083\u0084\f\5\2\2"+
 		"\u0084\u0085\7\22\2\2\u0085\u008a\5\24\13\2\u0086\u0087\f\4\2\2\u0087"+
