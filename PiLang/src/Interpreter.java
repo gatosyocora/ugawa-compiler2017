@@ -51,11 +51,12 @@ public class Interpreter extends InterpreterBase {
 	}
 
 	ReturnValue evalStmt(ASTNode ndx, Environment env) {
+		ReturnValue retval = null;
 		if (ndx instanceof ASTCompoundStmtNode) {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			ArrayList<ASTNode> stmts = nd.stmts;
 			for (ASTNode child: stmts)
-				evalStmt(child, env);
+				retval = evalStmt(child, env);
 		} else if (ndx instanceof ASTAssignStmtNode) {
 			ASTAssignStmtNode nd =(ASTAssignStmtNode) ndx;
 			Variable var = env.lookup(nd.var);
@@ -69,25 +70,25 @@ public class Interpreter extends InterpreterBase {
 		} else if (ndx instanceof ASTIfStmtNode) {
 			ASTIfStmtNode nd =(ASTIfStmtNode) ndx;
 			if (evalExpr(nd.cond, env) != 0)
-				evalStmt(nd.thenClause, env);
+				retval = evalStmt(nd.thenClause, env);
 			else
-				evalStmt(nd.elseClause, env);
+				retval = evalStmt(nd.elseClause, env);
 		} else if (ndx instanceof ASTWhileStmtNode) {
 			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
 			while (evalExpr(nd.cond, env) != 0) {
-				evalStmt(nd.stmt, env);
+				retval = evalStmt(nd.stmt, env);
 			}
 		} else if (ndx instanceof ASTReturnNode) {
 			ASTReturnNode nd = (ASTReturnNode) ndx;
 			int value = evalExpr(nd.expr, env);
-			return new ReturnValue(value);
+			retval = new ReturnValue(value);
 		} else if (ndx instanceof ASTPrintStmtNode) {
 			ASTPrintStmtNode nd = (ASTPrintStmtNode) ndx;
 			int num = evalExpr(nd.expr, env);
 			System.out.println(String.format("%08X", num));
 		} else
 			throw new Error("Unknown statement: " +ndx);
-		return null;
+		return retval;
 	}
 	
 	int evalExpr(ASTNode ndx, Environment env) {
@@ -95,7 +96,7 @@ public class Interpreter extends InterpreterBase {
 			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
 			int lhsValue = evalExpr(nd.lhs, env);
 			int rhsValue = evalExpr(nd.rhs, env);
-			if (nd.op.equals("+"))
+			if (nd.op.equals("+")) 
 				return lhsValue + rhsValue;
 			else if (nd.op.equals("-"))
 				return lhsValue - rhsValue;
