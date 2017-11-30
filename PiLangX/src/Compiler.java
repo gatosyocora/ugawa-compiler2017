@@ -94,7 +94,7 @@ public class Compiler extends CompilerBase {
 			compileExpr(nd.cond, env);
 			emitRI("cmp", REG_DST, 0);
 			emitJMP("beq", endLabel);
-			compileStmt(nd.stmt, epilogueLabel, env);
+			compileStmtd(nd.stmt, epilogueLabel, endLabel, env);
 			emitJMP("b", startLabel);
 			emitLabel(endLabel);
 		} else if (ndx instanceof ASTReturnNode) {  				// returnStmt
@@ -108,6 +108,31 @@ public class Compiler extends CompilerBase {
 			emitCALL(FUNCTION_PRINT);
 		} else
 			throw new Error("Unknown expression: " + ndx);
+	}
+	
+	void compileStmtd(ASTNode ndx, String epilogueLabel, String whileEndLabel, Environment env) {
+		
+		if (ndx instanceof ASTBreakStmtdNode) {
+			emitJMP("b", whileEndLabel);
+		} else if (ndx instanceof ASTCompoundStmtdNode) {					// compoundStmtd
+			ASTCompoundStmtdNode nd = (ASTCompoundStmtdNode) ndx;
+			for (ASTNode stmt: nd.stmts) {
+				compileStmtd(stmt, epilogueLabel, whileEndLabel, env);
+			}
+		} else if (ndx instanceof ASTIfStmtdNode) {				// ifStmtd
+			ASTIfStmtdNode nd = (ASTIfStmtdNode) ndx;
+			String elseLabel = freshLabel();
+			String endLabel = freshLabel();
+			compileExpr(nd.cond, env);
+			emitRI("cmp", REG_DST, 0);
+			emitJMP("beq", elseLabel);
+			compileStmtd(nd.thenClause, epilogueLabel, whileEndLabel, env);
+			emitJMP("b", endLabel);
+			emitLabel(elseLabel);
+			compileStmtd(nd.elseClause, epilogueLabel, whileEndLabel, env);
+			emitLabel(endLabel);
+		} else
+			compileStmt(ndx, epilogueLabel, env);
 	}
 
 	void compileExpr(ASTNode ndx, Environment env) {

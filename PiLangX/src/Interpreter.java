@@ -9,11 +9,16 @@ import parser.PiLangLexer;
 import parser.PiLangParser;
 
 public class Interpreter extends InterpreterBase {
+	
 	static class ReturnValue {
 		ReturnValue(int value) {
 			this.value = value;
 		}
 		int value;
+	}
+	
+	static class BreakValue extends ReturnValue {
+		BreakValue(int value) {super(value);}
 	}
 	
 	Environment globalEnv;
@@ -52,6 +57,8 @@ public class Interpreter extends InterpreterBase {
 
 	ReturnValue evalStmt(ASTNode ndx, Environment env) {
 		ReturnValue retval = null;
+		if (retval instanceof BreakValue)
+			System.out.println("this1");
 		if (ndx instanceof ASTCompoundStmtNode) {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			ArrayList<ASTNode> stmts = nd.stmts;
@@ -76,7 +83,9 @@ public class Interpreter extends InterpreterBase {
 		} else if (ndx instanceof ASTWhileStmtNode) {
 			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
 			while (evalExpr(nd.cond, env) != 0) {
-				retval = evalStmt(nd.stmt, env);
+				retval = evalStmtd(nd.stmt, env);
+				if (retval instanceof BreakValue) 
+					return null;
 			}
 		} else if (ndx instanceof ASTReturnNode) {
 			ASTReturnNode nd = (ASTReturnNode) ndx;
@@ -90,6 +99,35 @@ public class Interpreter extends InterpreterBase {
 			throw new Error("Unknown statement: " +ndx);
 		return retval;
 	}
+	
+	ReturnValue evalStmtd(ASTNode ndx, Environment env) {
+		ReturnValue retval = null;
+		if (ndx instanceof ASTBreakStmtdNode) {
+			System.out.println("this");
+			return new BreakValue(0);
+		}
+		else if (ndx instanceof ASTCompoundStmtdNode) {
+			ASTCompoundStmtdNode nd = (ASTCompoundStmtdNode) ndx;
+			ArrayList<ASTNode> stmts = nd.stmts;
+			for (ASTNode child: stmts) {
+				retval = evalStmtd(child, env);
+				if (retval instanceof BreakValue) {
+					break;
+				}
+			}
+		}
+		else if (ndx instanceof ASTIfStmtdNode) {
+			ASTIfStmtdNode nd =(ASTIfStmtdNode) ndx;
+			if (evalExpr(nd.cond, env) != 0)
+				retval = evalStmtd(nd.thenClause, env);
+			else
+				retval = evalStmtd(nd.elseClause, env);
+		} else {
+			retval = evalStmt(ndx, env);
+		}
+		return retval;
+	}
+	
 	
 	int evalExpr(ASTNode ndx, Environment env) {
 		if (ndx instanceof ASTLogicExprNode) {

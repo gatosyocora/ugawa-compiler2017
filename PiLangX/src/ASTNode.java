@@ -128,6 +128,44 @@ class ASTPrintStmtNode extends ASTNode {
 	}
 }
 
+class ASTBreakStmtdNode extends ASTNode {
+	ASTBreakStmtdNode() {}
+	@Override
+	public String toString() {
+		return "(BreakStmtd)";
+	}
+}
+
+class ASTCompoundStmtdNode extends ASTNode {
+	ArrayList<ASTNode> stmts;
+	ASTCompoundStmtdNode(ArrayList<ASTNode> stmts) {
+		this.stmts = stmts;
+	}
+	@Override
+	public String toString() {
+		String s = "(CompoundStmtd \n";
+		for (ASTNode stmt: stmts)
+			s += stmt + "\n";
+		s += ")";
+		return s;
+	}
+}
+
+class ASTIfStmtdNode extends ASTNode {
+	ASTNode cond;
+	ASTNode thenClause;
+	ASTNode elseClause;
+	ASTIfStmtdNode(ASTNode cond, ASTNode thenClause, ASTNode elseClause) {
+		this.cond = cond;
+		this.thenClause = thenClause;
+		this.elseClause = elseClause;
+	}
+	@Override
+	public String toString() {
+		return "(IfStmt "+cond+"\n"+thenClause+"\n"+elseClause+")";
+	}
+}
+
 class ASTCmpExprNode extends ASTNode {
 	String op;
 	ASTNode lhs;

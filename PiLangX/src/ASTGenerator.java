@@ -5,17 +5,22 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import parser.PiLangParser.AddExprContext;
 import parser.PiLangParser.AssignStmtContext;
+import parser.PiLangParser.BreakStmtdContext;
 import parser.PiLangParser.CallExprContext;
 import parser.PiLangParser.CompoundStmtContext;
+import parser.PiLangParser.CompoundStmtdContext;
 import parser.PiLangParser.ExprContext;
 import parser.PiLangParser.FuncDeclContext;
 import parser.PiLangParser.IfStmtContext;
+import parser.PiLangParser.IfStmtdContext;
 import parser.PiLangParser.LiteralExprContext;
 import parser.PiLangParser.MulExprContext;
 import parser.PiLangParser.ParenExprContext;
 import parser.PiLangParser.ProgContext;
+import parser.PiLangParser.RemoveStmtdContext;
 import parser.PiLangParser.ReturnStmtContext;
 import parser.PiLangParser.StmtContext;
+import parser.PiLangParser.StmtdContext;
 import parser.PiLangParser.VarExprContext;
 import parser.PiLangParser.WhileStmtContext;
 import parser.PiLangParser.LogicNotExprContext;
@@ -77,16 +82,16 @@ public class ASTGenerator {
 			String var = ctx.IDENTIFIER().getText();
 			ASTNode expr = translate(ctx.expr());
 			return new ASTAssignStmtNode(var, expr);
-		} else if (ctxx instanceof IfStmtContext) {
+		} else if (ctxx instanceof IfStmtContext) { // IfStmt
 			IfStmtContext ctx = (IfStmtContext) ctxx;
 			ASTNode cond = translate(ctx.expr());
 			ASTNode thenClause = translate(ctx.stmt(0));
 			ASTNode elseClause = translate(ctx.stmt(1));
 			return new ASTIfStmtNode(cond, thenClause, elseClause);
-		} else if (ctxx instanceof WhileStmtContext) {
+		} else if (ctxx instanceof WhileStmtContext) { // WhileStmt
 			WhileStmtContext ctx = (WhileStmtContext) ctxx;
 			ASTNode cond = translate(ctx.expr());
-			ASTNode stmt = translate(ctx.stmt());
+			ASTNode stmt = translate(ctx.stmtd());
 			return new ASTWhileStmtNode(cond, stmt);
 	   } else if (ctxx instanceof ReturnStmtContext) {
 			ReturnStmtContext ctx = (ReturnStmtContext) ctxx;
@@ -96,7 +101,26 @@ public class ASTGenerator {
  			PrintStmtContext ctx = (PrintStmtContext) ctxx;
  			ASTNode expr = translate(ctx.expr());
  			return new ASTPrintStmtNode(expr);
-		}  else if (ctxx instanceof ExprContext) {
+		} else if (ctxx instanceof BreakStmtdContext) { // breakStmtd
+			return new ASTBreakStmtdNode();
+		} else if (ctxx instanceof CompoundStmtdContext) { // compoundStmtd
+			CompoundStmtdContext ctx = (CompoundStmtdContext) ctxx;
+			ArrayList<ASTNode> stmts = new ArrayList<ASTNode>();
+			for (StmtdContext t: ctx.stmtd()) {
+				ASTNode n = translate(t);
+				stmts.add(n);
+			}
+			return new ASTCompoundStmtdNode(stmts);
+		} else if (ctxx instanceof IfStmtdContext) { // IfStmtd
+			IfStmtdContext ctx = (IfStmtdContext) ctxx;
+			ASTNode cond = translate(ctx.expr());
+			ASTNode thenClause = translate(ctx.stmtd(0));
+			ASTNode elseClause = translate(ctx.stmtd(1));
+			return new ASTIfStmtdNode(cond, thenClause, elseClause);
+		} else if (ctxx instanceof RemoveStmtdContext) { // removeStmtd
+			RemoveStmtdContext ctx = (RemoveStmtdContext) ctxx;
+			return translate(ctx.stmt());
+		} else if (ctxx instanceof ExprContext) {
 			ExprContext ctx = (ExprContext) ctxx;
 			return translate(ctx.logicOrExpr());
 		} else if (ctxx instanceof LogicOrExprContext) { // logicOrExpr

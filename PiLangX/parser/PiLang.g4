@@ -17,9 +17,15 @@ varDecls: ('var' IDENTIFIER ';')*
 stmt: '{' stmt* '}'							# compoundStmt
 	| IDENTIFIER '=' expr ';'				# assignStmt
 	| 'if' '(' expr ')' stmt 'else' stmt	# ifStmt
-	| 'while' '(' expr ')' stmt				# whileStmt
+	| 'while' '(' expr ')' stmtd			# whileStmt
 	| 'return' expr ';'						# returnStmt
 	| 'print' expr ';'						# printStmt
+	;
+	
+stmtd: BREAK ';'								# breakStmtd
+	| '{' stmtd* '}'							# compoundStmtd
+	| 'if' '(' expr ')' stmtd 'else' stmtd	# ifStmtd
+	| stmt										# removeStmtd
 	;
 
 expr: logicOrExpr
@@ -86,6 +92,7 @@ LOGICANDOP: '&&';
 LOGICOROP: '||';
 LOGICNOTOP:	'!';
 
+BREAK: 'break';
 IDENTIFIER: 'x'|'y'|'z'|'main'|[a-zA-Z_][a-zA-Z_0-9]+;
 VALUE: '0'|[1-9][0-9]*;
 WS: [ \t\r\n] -> skip;
