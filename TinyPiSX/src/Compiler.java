@@ -12,7 +12,30 @@ public class Compiler extends CompilerBase {
 	String printLabel;
 	
 	void compileExpr(ASTNode ndx, Environment env) {
-		if (ndx instanceof ASTCmpExprNode) {
+		if (ndx instanceof ASTLogicExprNode) {
+			ASTLogicExprNode nd = (ASTLogicExprNode) ndx;
+			if (nd.lhs != null) {
+				compileExpr(nd.lhs, env);
+				emitRI("cmp",REG_DST, 0);
+				emitRI("moveq", REG_DST, 0);
+				emitPUSH(REG_R1);
+				emitRR("mov", REG_R1, REG_DST);
+			}
+			compileExpr(nd.rhs, env);
+			emitRI("cmp",REG_DST, 0);
+			emitRI("moveq", REG_DST, 0);
+			if (nd.op.equals("&&"))
+				emitRRR("and", REG_DST, REG_DST, REG_R1);
+			else if (nd.op.equals("||"))
+				emitRRR("orr", REG_DST, REG_DST, REG_R1);
+			else if (nd.op.equals("!")) 
+				emitRR("mvn", REG_DST, REG_DST);
+			else
+				throw new Error("Unknown operator: "+nd.op);
+			emitRRI("and", REG_DST, REG_DST, 1);
+			if (nd.lhs != null)
+				emitPOP(REG_R1);
+		} else if (ndx instanceof ASTCmpExprNode) {
 			ASTCmpExprNode nd = (ASTCmpExprNode) ndx;
 			compileExpr(nd.lhs, env);
 			emitPUSH(REG_R1);

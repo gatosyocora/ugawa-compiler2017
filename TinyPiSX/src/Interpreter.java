@@ -11,7 +11,21 @@ import parser.TinyPiSParser.ProgContext;
 
 public class Interpreter extends InterpreterBase {
 	int evalExpr(ASTNode ndx, Environment env) {
-		if (ndx instanceof ASTCmpExprNode) {
+		if (ndx instanceof ASTLogicExprNode) {
+			ASTLogicExprNode nd = (ASTLogicExprNode) ndx;
+			int lhsValue = 0;
+			if (nd.lhs != null)
+				lhsValue = evalExpr(nd.lhs, env);
+			int rhsValue = evalExpr(nd.rhs, env);
+			if (nd.op.equals("&&"))
+				return ((lhsValue != 0) && (rhsValue != 0))? 1:0;
+			else if (nd.op.equals("||"))
+				return ((lhsValue != 0) || (rhsValue != 0))? 1:0;
+			else if (nd.op.equals("!"))
+				return (rhsValue == 0)? 1:0;
+			else
+				throw new Error("Unknwon operator: "+nd.op);
+		} else if (ndx instanceof ASTCmpExprNode) {
 			ASTCmpExprNode nd = (ASTCmpExprNode) ndx;
 			int lhsValue = evalExpr(nd.lhs, env);
 			int rhsValue = evalExpr(nd.rhs, env);
