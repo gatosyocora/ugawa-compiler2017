@@ -143,6 +143,24 @@ class ASTCmpExprNode extends ASTNode {
 	}
 }
 
+class ASTLogicExprNode extends ASTNode {
+	String op;
+	ASTNode lhs;
+	ASTNode rhs;
+	ASTLogicExprNode(String op, ASTNode lhs, ASTNode rhs) {
+		this.op = op;
+		this.lhs = lhs;
+		this.rhs = rhs;
+	}
+	@Override
+	public String toString() {
+		if (lhs != null)
+			return "(LogicExpr "+op+" "+lhs+" "+rhs+")";
+		else 
+			return "(LogicExpr "+op+" "+rhs+")";
+	}
+}
+
 class ASTBinaryExprNode extends ASTNode {
 	String op;
 	ASTNode lhs;

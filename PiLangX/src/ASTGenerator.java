@@ -18,6 +18,9 @@ import parser.PiLangParser.ReturnStmtContext;
 import parser.PiLangParser.StmtContext;
 import parser.PiLangParser.VarExprContext;
 import parser.PiLangParser.WhileStmtContext;
+import parser.PiLangParser.LogicNotExprContext;
+import parser.PiLangParser.LogicAndExprContext;
+import parser.PiLangParser.LogicOrExprContext;
 import parser.PiLangParser.CmpExprContext;
 import parser.PiLangParser.EqualExprContext;
 import parser.PiLangParser.PrintStmtContext;
@@ -93,9 +96,23 @@ public class ASTGenerator {
  			PrintStmtContext ctx = (PrintStmtContext) ctxx;
  			ASTNode expr = translate(ctx.expr());
  			return new ASTPrintStmtNode(expr);
-		} else if (ctxx instanceof ExprContext) {
+		}  else if (ctxx instanceof ExprContext) {
 			ExprContext ctx = (ExprContext) ctxx;
-			return translate(ctx.orExpr());
+			return translate(ctx.logicOrExpr());
+		} else if (ctxx instanceof LogicOrExprContext) { // logicOrExpr
+			LogicOrExprContext ctx = (LogicOrExprContext) ctxx;
+			if (ctx.logicOrExpr() == null)
+				return translate(ctx.logicAndExpr());
+			ASTNode lhs = translate(ctx.logicOrExpr());
+			ASTNode rhs = translate(ctx.logicAndExpr());
+			return new ASTLogicExprNode(ctx.LOGICOROP().getText(), lhs, rhs);
+		} else if (ctxx instanceof LogicAndExprContext) { // logicAndExpr
+			LogicAndExprContext ctx = (LogicAndExprContext) ctxx;
+			if (ctx.logicAndExpr() == null)
+				return translate(ctx.orExpr());
+			ASTNode lhs = translate(ctx.logicAndExpr());
+			ASTNode rhs = translate(ctx.orExpr());
+			return new ASTLogicExprNode(ctx.LOGICANDOP().getText(), lhs, rhs);
 		} else if (ctxx instanceof OrExprContext) { // orExpr
 			OrExprContext ctx = (OrExprContext) ctxx;
 			if (ctx.orExpr() == null)
@@ -140,10 +157,17 @@ public class ASTGenerator {
 		} else if (ctxx instanceof MulExprContext) {
 			MulExprContext ctx = (MulExprContext) ctxx;
 			if (ctx.mulExpr() == null)
-				return translate(ctx.unaryExpr());
+				return translate(ctx.logicNotExpr());
 			ASTNode lhs = translate(ctx.mulExpr());
-			ASTNode rhs = translate(ctx.unaryExpr());
+			ASTNode rhs = translate(ctx.logicNotExpr());
 			return new ASTBinaryExprNode(ctx.MULOP().getText(), lhs, rhs);
+		} else if (ctxx instanceof LogicNotExprContext) { // logicNotExpr
+			LogicNotExprContext ctx = (LogicNotExprContext) ctxx;
+			if (ctx.LOGICNOTOP() == null)
+				return translate(ctx.unaryExpr());
+			ASTNode lhs = null;
+			ASTNode rhs = translate(ctx.logicNotExpr());
+			return new ASTLogicExprNode(ctx.LOGICNOTOP().getText(), lhs, rhs);
 		} else if (ctxx instanceof LiteralExprContext) {
 			LiteralExprContext ctx = (LiteralExprContext) ctxx;
 			int value = Integer.parseInt(ctx.VALUE().getText());

@@ -22,8 +22,16 @@ stmt: '{' stmt* '}'							# compoundStmt
 	| 'print' expr ';'						# printStmt
 	;
 
-expr: orExpr
+expr: logicOrExpr
       ;
+      
+logicOrExpr: logicOrExpr LOGICOROP logicAndExpr
+	| logicAndExpr
+	;
+	
+logicAndExpr: logicAndExpr LOGICANDOP orExpr
+	| orExpr
+	;
       
 orExpr: orExpr OROP andExpr
     | andExpr
@@ -46,7 +54,11 @@ addExpr: addExpr ADDOP mulExpr
 	| mulExpr
 	;
 
-mulExpr: mulExpr MULOP unaryExpr
+mulExpr: mulExpr MULOP logicNotExpr
+	| logicNotExpr
+	;
+	
+logicNotExpr: LOGICNOTOP logicNotExpr
 	| unaryExpr
 	;
 
@@ -70,6 +82,9 @@ ANDOP: '&';
 OROP: '|';
 CMPOP: [>|<]'='?;
 EQUALOP: [!|=]'=';
+LOGICANDOP: '&&';
+LOGICOROP: '||';
+LOGICNOTOP:	'!';
 
 IDENTIFIER: 'x'|'y'|'z'|'main'|[a-zA-Z_][a-zA-Z_0-9]+;
 VALUE: '0'|[1-9][0-9]*;
