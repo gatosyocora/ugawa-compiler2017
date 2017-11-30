@@ -30,10 +30,12 @@ public class Compiler extends CompilerBase {
 		emitPUSH(REG_R1);
 		emitRRI("sub", REG_SP, REG_SP, nd.varDecls.size() * 4);
 		
+		emitRI("mov", REG_DST, 0);
 		for (int i = 0; i < nd.varDecls.size(); i++) {
 			String name = nd.varDecls.get(i);
 			int offset = -4 * (i + 3);
 			LocalVariable var = new LocalVariable(name, offset);
+			emitSTR(REG_DST, REG_FP, offset); //　初期値を代入
 			env.push(var);
 		}
 		for (ASTNode stmt: nd.stmts)
