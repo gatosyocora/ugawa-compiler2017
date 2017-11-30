@@ -1,0 +1,9 @@
+function main() {
+  if (6 < 5) {
+    print 5;
+  }
+  else {
+    print 3;
+  }
+  return 0;
+}
