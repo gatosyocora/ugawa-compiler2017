@@ -1,0 +1,9 @@
+var x;
+function main() {
+  x = 5;
+  while(1) {
+      break;
+       x = 3;
+  }
+  return x;
+}

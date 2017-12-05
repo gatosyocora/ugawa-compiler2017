@@ -1,0 +1,13 @@
+var x;
+function main() {
+  x = 5;
+  while(1) {
+    if (x > 3) {
+      x = x - 1;
+    }
+    else {
+      break;
+    }
+  }
+  return x;
+}
