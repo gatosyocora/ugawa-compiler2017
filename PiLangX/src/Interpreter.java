@@ -57,8 +57,6 @@ public class Interpreter extends InterpreterBase {
 
 	ReturnValue evalStmt(ASTNode ndx, Environment env) {
 		ReturnValue retval = null;
-		if (retval instanceof BreakValue)
-			System.out.println("this1");
 		if (ndx instanceof ASTCompoundStmtNode) {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			ArrayList<ASTNode> stmts = nd.stmts;
@@ -103,7 +101,6 @@ public class Interpreter extends InterpreterBase {
 	ReturnValue evalStmtd(ASTNode ndx, Environment env) {
 		ReturnValue retval = null;
 		if (ndx instanceof ASTBreakStmtdNode) {
-			System.out.println("this");
 			return new BreakValue(0);
 		}
 		else if (ndx instanceof ASTCompoundStmtdNode) {
