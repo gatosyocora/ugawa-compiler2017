@@ -1,0 +1,16 @@
+var x;
+{
+  x = 5;
+  if (x > x + 1) {
+    print 6;
+  }
+  else {
+    print 4;
+  }
+  if (-x <= x) {
+    answer = 5;
+  }
+  else {
+    answer = 3;
+  }
+}

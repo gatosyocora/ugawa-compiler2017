@@ -1,0 +1,10 @@
+var x;
+var y;
+{
+  if (!(0||0)&&1) {
+    answer = 5;
+  }
+  else {
+    answer = 3;
+  }
+}
