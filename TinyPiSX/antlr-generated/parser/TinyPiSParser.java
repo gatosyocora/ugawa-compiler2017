@@ -1031,8 +1031,8 @@ public class TinyPiSParser extends Parser {
 	}
 	public static class NotExprContext extends UnaryExprContext {
 		public TerminalNode NOTOP() { return getToken(TinyPiSParser.NOTOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public NotExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -1042,8 +1042,8 @@ public class TinyPiSParser extends Parser {
 	}
 	public static class SubExprContext extends UnaryExprContext {
 		public TerminalNode SUBOP() { return getToken(TinyPiSParser.SUBOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public SubExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -1096,7 +1096,7 @@ public class TinyPiSParser extends Parser {
 				setState(176);
 				match(SUBOP);
 				setState(177);
-				expr();
+				unaryExpr();
 				}
 				break;
 			case NOTOP:
@@ -1106,7 +1106,7 @@ public class TinyPiSParser extends Parser {
 				setState(178);
 				match(NOTOP);
 				setState(179);
-				expr();
+				unaryExpr();
 				}
 				break;
 			default:
@@ -1255,8 +1255,8 @@ public class TinyPiSParser extends Parser {
 		"\5\34\17\2\u00aa\u00a7\3\2\2\2\u00aa\u00a9\3\2\2\2\u00ab\33\3\2\2\2\u00ac"+
 		"\u00b7\7\32\2\2\u00ad\u00b7\7\31\2\2\u00ae\u00af\7\t\2\2\u00af\u00b0\5"+
 		"\b\5\2\u00b0\u00b1\7\n\2\2\u00b1\u00b7\3\2\2\2\u00b2\u00b3\7\20\2\2\u00b3"+
-		"\u00b7\5\b\5\2\u00b4\u00b5\7\16\2\2\u00b5\u00b7\5\b\5\2\u00b6\u00ac\3"+
-		"\2\2\2\u00b6\u00ad\3\2\2\2\u00b6\u00ae\3\2\2\2\u00b6\u00b2\3\2\2\2\u00b6"+
+		"\u00b7\5\34\17\2\u00b4\u00b5\7\16\2\2\u00b5\u00b7\5\34\17\2\u00b6\u00ac"+
+		"\3\2\2\2\u00b6\u00ad\3\2\2\2\u00b6\u00ae\3\2\2\2\u00b6\u00b2\3\2\2\2\u00b6"+
 		"\u00b4\3\2\2\2\u00b7\35\3\2\2\2\20&-HT_ju\u0080\u008b\u0097\u0099\u00a4"+
 		"\u00aa\u00b6";
 	public static final ATN _ATN =

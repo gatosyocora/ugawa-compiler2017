@@ -57,8 +57,8 @@ logicNotExpr: LOGICNOTOP logicNotExpr
 unaryExpr: VALUE			# literalExpr
 	| IDENTIFIER			# varExpr
 	| '(' expr ')'		# parenExpr
-	| SUBOP expr			# subExpr
-	| NOTOP expr			# notExpr
+	| SUBOP unaryExpr			# subExpr
+	| NOTOP unaryExpr			# notExpr
 	;
 
 NOTOP: '~';
