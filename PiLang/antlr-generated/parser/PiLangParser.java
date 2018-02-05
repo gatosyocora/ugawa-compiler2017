@@ -854,8 +854,8 @@ public class PiLangParser extends Parser {
 	}
 	public static class NotExprContext extends UnaryExprContext {
 		public TerminalNode NOTOP() { return getToken(PiLangParser.NOTOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public NotExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -865,8 +865,8 @@ public class PiLangParser extends Parser {
 	}
 	public static class SubExprContext extends UnaryExprContext {
 		public TerminalNode SUBOP() { return getToken(PiLangParser.SUBOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public SubExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -926,7 +926,7 @@ public class PiLangParser extends Parser {
 				setState(157);
 				match(SUBOP);
 				setState(158);
-				expr();
+				unaryExpr();
 				}
 				break;
 			case 5:
@@ -936,7 +936,7 @@ public class PiLangParser extends Parser {
 				setState(159);
 				match(NOTOP);
 				setState(160);
-				expr();
+				unaryExpr();
 				}
 				break;
 			case 6:
@@ -1123,10 +1123,10 @@ public class PiLangParser extends Parser {
 		"\2\2\2\u0096\u0097\3\2\2\2\u0097\25\3\2\2\2\u0098\u0096\3\2\2\2\u0099"+
 		"\u00a9\7\30\2\2\u009a\u00a9\7\27\2\2\u009b\u009c\7\4\2\2\u009c\u009d\5"+
 		"\f\7\2\u009d\u009e\7\5\2\2\u009e\u00a9\3\2\2\2\u009f\u00a0\7\23\2\2\u00a0"+
-		"\u00a9\5\f\7\2\u00a1\u00a2\7\21\2\2\u00a2\u00a9\5\f\7\2\u00a3\u00a4\7"+
-		"\27\2\2\u00a4\u00a5\7\4\2\2\u00a5\u00a6\5\30\r\2\u00a6\u00a7\7\5\2\2\u00a7"+
-		"\u00a9\3\2\2\2\u00a8\u0099\3\2\2\2\u00a8\u009a\3\2\2\2\u00a8\u009b\3\2"+
-		"\2\2\u00a8\u009f\3\2\2\2\u00a8\u00a1\3\2\2\2\u00a8\u00a3\3\2\2\2\u00a9"+
+		"\u00a9\5\26\f\2\u00a1\u00a2\7\21\2\2\u00a2\u00a9\5\26\f\2\u00a3\u00a4"+
+		"\7\27\2\2\u00a4\u00a5\7\4\2\2\u00a5\u00a6\5\30\r\2\u00a6\u00a7\7\5\2\2"+
+		"\u00a7\u00a9\3\2\2\2\u00a8\u0099\3\2\2\2\u00a8\u009a\3\2\2\2\u00a8\u009b"+
+		"\3\2\2\2\u00a8\u009f\3\2\2\2\u00a8\u00a1\3\2\2\2\u00a8\u00a3\3\2\2\2\u00a9"+
 		"\27\3\2\2\2\u00aa\u00b4\3\2\2\2\u00ab\u00b0\5\f\7\2\u00ac\u00ad\7\b\2"+
 		"\2\u00ad\u00af\5\f\7\2\u00ae\u00ac\3\2\2\2\u00af\u00b2\3\2\2\2\u00b0\u00ae"+
 		"\3\2\2\2\u00b0\u00b1\3\2\2\2\u00b1\u00b4\3\2\2\2\u00b2\u00b0\3\2\2\2\u00b3"+
