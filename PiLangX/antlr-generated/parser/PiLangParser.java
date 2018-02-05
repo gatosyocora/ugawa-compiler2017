@@ -1325,8 +1325,8 @@ public class PiLangParser extends Parser {
 	}
 	public static class NotExprContext extends UnaryExprContext {
 		public TerminalNode NOTOP() { return getToken(PiLangParser.NOTOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public NotExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -1336,8 +1336,8 @@ public class PiLangParser extends Parser {
 	}
 	public static class SubExprContext extends UnaryExprContext {
 		public TerminalNode SUBOP() { return getToken(PiLangParser.SUBOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public SubExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -1397,7 +1397,7 @@ public class PiLangParser extends Parser {
 				setState(239);
 				match(SUBOP);
 				setState(240);
-				expr();
+				unaryExpr();
 				}
 				break;
 			case 5:
@@ -1407,7 +1407,7 @@ public class PiLangParser extends Parser {
 				setState(241);
 				match(NOTOP);
 				setState(242);
-				expr();
+				unaryExpr();
 				}
 				break;
 			case 6:
@@ -1663,8 +1663,8 @@ public class PiLangParser extends Parser {
 		"\u00e7\7\33\2\2\u00e7\u00ea\5 \21\2\u00e8\u00ea\5\"\22\2\u00e9\u00e6\3"+
 		"\2\2\2\u00e9\u00e8\3\2\2\2\u00ea!\3\2\2\2\u00eb\u00fb\7\36\2\2\u00ec\u00fb"+
 		"\7\35\2\2\u00ed\u00ee\7\4\2\2\u00ee\u00ef\5\16\b\2\u00ef\u00f0\7\5\2\2"+
-		"\u00f0\u00fb\3\2\2\2\u00f1\u00f2\7\23\2\2\u00f2\u00fb\5\16\b\2\u00f3\u00f4"+
-		"\7\21\2\2\u00f4\u00fb\5\16\b\2\u00f5\u00f6\7\35\2\2\u00f6\u00f7\7\4\2"+
+		"\u00f0\u00fb\3\2\2\2\u00f1\u00f2\7\23\2\2\u00f2\u00fb\5\"\22\2\u00f3\u00f4"+
+		"\7\21\2\2\u00f4\u00fb\5\"\22\2\u00f5\u00f6\7\35\2\2\u00f6\u00f7\7\4\2"+
 		"\2\u00f7\u00f8\5$\23\2\u00f8\u00f9\7\5\2\2\u00f9\u00fb\3\2\2\2\u00fa\u00eb"+
 		"\3\2\2\2\u00fa\u00ec\3\2\2\2\u00fa\u00ed\3\2\2\2\u00fa\u00f1\3\2\2\2\u00fa"+
 		"\u00f3\3\2\2\2\u00fa\u00f5\3\2\2\2\u00fb#\3\2\2\2\u00fc\u0106\3\2\2\2"+

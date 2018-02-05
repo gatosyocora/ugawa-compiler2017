@@ -205,11 +205,11 @@ public class ASTGenerator {
 			return translate(ctx.expr());
 		} else if (ctxx instanceof SubExprContext) { // subExpr
 			SubExprContext ctx = (SubExprContext) ctxx;
-			ASTNode rhs = translate(ctx.expr());
+			ASTNode rhs = translate(ctx.unaryExpr());
 			return new ASTUnaryNode(ctx.SUBOP().getText(), rhs);
 		} else if (ctxx instanceof NotExprContext) { // notExpr
 			NotExprContext ctx = (NotExprContext) ctxx;
-			ASTNode rhs = translate(ctx.expr());
+			ASTNode rhs = translate(ctx.unaryExpr());
 			return new ASTUnaryNode(ctx.NOTOP().getText(), rhs);
 		}else if (ctxx instanceof CallExprContext) {
 			CallExprContext ctx = (CallExprContext) ctxx;
