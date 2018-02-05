@@ -433,8 +433,8 @@ public class TinyPiEParser extends Parser {
 	}
 	public static class NotExprContext extends UnaryExprContext {
 		public TerminalNode NOTOP() { return getToken(TinyPiEParser.NOTOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public NotExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -444,8 +444,8 @@ public class TinyPiEParser extends Parser {
 	}
 	public static class SubExprContext extends UnaryExprContext {
 		public TerminalNode SUBOP() { return getToken(TinyPiEParser.SUBOP, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public UnaryExprContext unaryExpr() {
+			return getRuleContext(UnaryExprContext.class,0);
 		}
 		public SubExprContext(UnaryExprContext ctx) { copyFrom(ctx); }
 	}
@@ -498,7 +498,7 @@ public class TinyPiEParser extends Parser {
 				setState(67);
 				match(SUBOP);
 				setState(68);
-				expr();
+				unaryExpr();
 				}
 				break;
 			case NOTOP:
@@ -508,7 +508,7 @@ public class TinyPiEParser extends Parser {
 				setState(69);
 				match(NOTOP);
 				setState(70);
-				expr();
+				unaryExpr();
 				}
 				break;
 			default:
@@ -588,7 +588,7 @@ public class TinyPiEParser extends Parser {
 		"\2\62\t\3\2\2\2\63\61\3\2\2\2\64\65\b\6\1\2\65\66\5\f\7\2\66<\3\2\2\2"+
 		"\678\f\4\2\289\7\b\2\29;\5\f\7\2:\67\3\2\2\2;>\3\2\2\2<:\3\2\2\2<=\3\2"+
 		"\2\2=\13\3\2\2\2><\3\2\2\2?J\7\f\2\2@J\7\13\2\2AB\7\3\2\2BC\5\2\2\2CD"+
-		"\7\4\2\2DJ\3\2\2\2EF\7\7\2\2FJ\5\2\2\2GH\7\5\2\2HJ\5\2\2\2I?\3\2\2\2I"+
+		"\7\4\2\2DJ\3\2\2\2EF\7\7\2\2FJ\5\f\7\2GH\7\5\2\2HJ\5\f\7\2I?\3\2\2\2I"+
 		"@\3\2\2\2IA\3\2\2\2IE\3\2\2\2IG\3\2\2\2J\r\3\2\2\2\b\30#/\61<I";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());

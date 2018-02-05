@@ -63,11 +63,11 @@ public class ASTGenerator {
 			return translateExpr(ctx.expr());
 		} else if (ctxx instanceof SubExprContext) { // subExpr
 			SubExprContext ctx = (SubExprContext) ctxx;
-			ASTNode rhs = translateExpr(ctx.expr());
+			ASTNode rhs = translateExpr(ctx.unaryExpr());
 			return new ASTUnaryNode(ctx.SUBOP().getText(), rhs);
 		} else if (ctxx instanceof NotExprContext) { // notExpr
 			NotExprContext ctx = (NotExprContext) ctxx;
-			ASTNode rhs = translateExpr(ctx.expr());
+			ASTNode rhs = translateExpr(ctx.unaryExpr());
 			return new ASTUnaryNode(ctx.NOTOP().getText(), rhs);
 		}
 		throw new Error("Unknown parse tree node: "+ctxx.getText());		
